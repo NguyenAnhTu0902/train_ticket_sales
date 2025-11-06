@@ -9,18 +9,15 @@ app.use(morgan("dev"));
 // app.use(morgan("combined"));
 app.use(helmet());
 app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //init database
 require("./dbs/init.mongodb");
 require("./helpers/check.connect").checkOverload();
 
 //init routes
-app.get("/", (req, res) => {
-  return res.status(200).json({
-    message: "Hello World",
-  });
-});
-
+app.use("", require("./routes"));
 //handling errors
 
 module.exports = app;
