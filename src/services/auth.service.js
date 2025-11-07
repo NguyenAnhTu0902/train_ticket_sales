@@ -4,7 +4,7 @@ const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { USER_ROLE } = require("../constants/role");
-const { createTokenPair } = require("../utils/authUtils");
+const { createTokenPair } = require("../auth/authUtils");
 const KeyTokenService = require("./keyToken.service");
 const { getInfoData } = require("../utils");
 
