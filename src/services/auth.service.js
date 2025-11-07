@@ -7,6 +7,7 @@ const { USER_ROLE } = require("../constants/role");
 const { createTokenPair } = require("../auth/authUtils");
 const KeyTokenService = require("./keyToken.service");
 const { getInfoData } = require("../utils");
+const { ConflictRequestError, BadRequestError } = require("../core/error.response");
 
 class AuthService {
   static signUp = async ({name, email, password}) => {
@@ -14,11 +15,7 @@ class AuthService {
       //check shop is exists
       const user = await userModel.findOne({email}).lean(); 
       if (user) {
-        return {
-          code: 400,
-          status: "error",
-          message: "User already exists", 
-        };
+        throw new ConflictRequestError("User already exists");
       }
       //hash password
       const hashedPassword = await bcrypt.hashSync(password, 10);
@@ -30,11 +27,7 @@ class AuthService {
 
         const keyStore = await KeyTokenService.createKeyToken({userId: newUser._id, publicKey, privateKey});
         if (!keyStore) {
-          return {
-            code: 400,
-            status: "error",
-            message: "Generate key pair failed",
-          };
+          throw new BadRequestError("Generate key pair failed");
         }
         const tokens = await createTokenPair({userId: newUser._id, email}, publicKey, privateKey);
 
